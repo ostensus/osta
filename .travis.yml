@@ -6,4 +6,4 @@ node_js:
 before_install:
   - mysql -e "CREATE DATABASE osta;"
   - mysql -e "CREATE USER 'osta'@'%' IDENTIFIED BY 'osta';"
-  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'osts'@'%' WITH GRANT OPTION;"
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'osta'@'%' WITH GRANT OPTION;"
