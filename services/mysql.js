@@ -1,6 +1,8 @@
 var mysql = require('mysql');
 var squel = require("squel");
 
+squel.useFlavour('mysql');
+
 var OstaMysql = function() {
 	var self = this;
   var connection = mysql.createConnection({
