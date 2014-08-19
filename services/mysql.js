@@ -20,7 +20,7 @@ var OstaMysql = function() {
       field("lhs.imsi", "id").
       field("CAST(DATE_FORMAT(lhs.timestamp, '%Y-%m-%d') as DATETIME)", "day").
       field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version"). // Need to parameterize
-      field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS INT)", "bucket").
+      field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS UNSIGNED)", "bucket").
       from("call_records", "lhs").
       join("call_records", "rhs", "lhs.imsi >= rhs.imsi").
       group("day", "id", "version").
