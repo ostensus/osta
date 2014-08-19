@@ -17,7 +17,7 @@ var OstaMysql = function() {
     var aligned = squel.select().
       field("lhs.imsi", "id").
       field("CAST(DATE_FORMAT(lhs.timestamp, '%Y-%m-%d') as DATETIME)", "day").
-      field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version").
+      field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version"). // Need to parameterize
       field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS INT)", "bucket").
       from("call_records", "lhs").
       join("call_records", "rhs", "lhs.imsi >= rhs.imsi").
@@ -34,11 +34,32 @@ var OstaMysql = function() {
       order("day", true).
       order("bucket", true);
 
-    var query = connection.query(bucketed.toString(), function(err, rows, fields) {
+    var daily = squel.select().
+      field("day").
+      field("MD5(GROUP_CONCAT(digest ORDER BY bucket ASC separator ''))", "digest").
+      from(bucketed, "bucketed").
+      group("day").
+      order("day", true);
+
+    var monthly = squel.select().
+      field("CAST(DATE_FORMAT(day, '%Y-%m-01') as DATETIME)", "month").
+      field("MD5(GROUP_CONCAT(digest ORDER BY day ASC separator ''))", "digest").
+      from(daily, "daily").
+      group("month").
+      order("month", true);
+
+    var yearly = squel.select().
+      field("CAST(DATE_FORMAT(month, '%Y-01-01') as DATETIME)", "year").
+      field("MD5(GROUP_CONCAT(digest ORDER BY month ASC separator ''))", "digest").
+      from(monthly, "monthly").
+      group("year").
+      order("year", true);
+
+    var query = connection.query(yearly.toString(), function(err, rows, fields) {
         if (err) {
           callback(err);
         } else { 
-          console.log(rows[0]);         
+          //console.log(rows);         
           callback(null, rows);  
         }
     });

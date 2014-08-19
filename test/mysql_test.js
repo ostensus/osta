@@ -38,7 +38,7 @@ before(function(done){
 
     var start = moment("2012-08-03 22:21:31");
 
-    var calls = _.range(100).map(function (n) { 
+    var calls = _.range(1000).map(function (n) { 
       var imsi = 230023741299234 + chance.integer({min: 0, max: 2}); + '';
       var duration = chance.integer({min: 1, max: 100});
       var timestamp = start.add(1, 'days').format("YYYY-MM-DD HH:mm:ss");
@@ -63,7 +63,7 @@ test('Osta Mysql partition test', function(done){
   
   osta.partition(function(err, result) {
     done(err);
-    assert.equal(100, result.length);
+    assert.equal(4, result.length); // 1000 days should span 4 years
   });
   
 });
