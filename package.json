@@ -3,13 +3,15 @@
   "version": "0.0.1",
   "description": "Connects datasources behind the firewall to Ostensus",
   "dependencies": {
-    "mysql": "2.4.2"
+    "mysql": "2.4.2",
+    "squel": "3.7.0"
   },
   "devDependencies": {
     "mocha": "1.21.4",
     "postgrator": "0.2.0",
     "underscore": "1.6.0",
-    "chance": "0.5.9"
+    "chance": "0.5.9",
+    "moment": "2.8.1"
   },
   "scripts": {
     "test": "mocha --ui tdd"

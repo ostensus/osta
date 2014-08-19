@@ -3,6 +3,7 @@ var postgrator = require('postgrator');
 var mysql      = require('mysql');
 var _          = require('underscore');
 var Chance     = require('chance');
+var moment     = require('moment');
 
 var chance = new Chance();
 
@@ -35,10 +36,12 @@ before(function(done){
       if (err) done(err);
     });
 
-    var calls = _.range(10).map(function (n) { 
-      var imsi = 230023741299234 + n + '';
+    var start = moment("2012-08-03 22:21:31");
+
+    var calls = _.range(100).map(function (n) { 
+      var imsi = 230023741299234 + chance.integer({min: 0, max: 2}); + '';
       var duration = chance.integer({min: 1, max: 100});
-      var timestamp = chance.date({year: 2014});
+      var timestamp = start.add(1, 'days').format("YYYY-MM-DD HH:mm:ss");
       var caller = chance.phone();
       var callee = chance.phone();
       return [imsi, timestamp, duration, caller, callee];
@@ -54,6 +57,16 @@ before(function(done){
   });
 
 })
+
+test('Osta Mysql partition test', function(done){
+  var osta = new OstaMysql();
+  
+  osta.partition(function(err, result) {
+    done(err);
+    assert.equal(100, result.length);
+  });
+  
+});
 
 test('Osta Mysql smoke test', function(done){
   var osta = new OstaMysql();
