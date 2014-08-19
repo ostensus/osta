@@ -4,7 +4,8 @@
   "description": "Connects datasources behind the firewall to Ostensus",
   "dependencies": {
     "mysql": "2.4.2",
-    "squel": "3.7.0"
+    "squel": "3.7.0",
+    "dot": "1.0.1"
   },
   "devDependencies": {
     "mocha": "1.21.4",

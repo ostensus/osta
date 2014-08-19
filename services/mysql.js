@@ -1,7 +1,12 @@
 var mysql = require('mysql');
 var squel = require("squel");
+var doT   = require('dot');
 
 squel.useFlavour('mysql');
+
+var idTemplate        = doT.template("lhs.{{= it.id }}");
+var joinTemplate      = doT.template("lhs.{{= it.id }} >= rhs.{{= it.id }}");
+var partitionTemplate = doT.template("CAST(DATE_FORMAT(lhs.{{= it.partition }}, '%Y-%m-%d') as DATETIME)");
 
 var OstaMysql = function() {
 	var self = this;
@@ -16,13 +21,15 @@ var OstaMysql = function() {
 
     connection.connect();
 
+    var target = {id: "imsi", partition: "timestamp"};
+
     var aligned = squel.select().
-      field("lhs.imsi", "id").
-      field("CAST(DATE_FORMAT(lhs.timestamp, '%Y-%m-%d') as DATETIME)", "day").
+      field(idTemplate(target), "id").
+      field(partitionTemplate(target), "day").
       field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version"). // Need to parameterize
       field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS UNSIGNED)", "bucket").
       from("call_records", "lhs").
-      join("call_records", "rhs", "lhs.imsi >= rhs.imsi").
+      join("call_records", "rhs", joinTemplate(target)).
       group("day", "id", "version").
       order("day", true).
       order("bucket", true);
