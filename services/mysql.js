@@ -14,15 +14,36 @@ var OstaMysql = function() {
 
     connection.connect();
 
-    var sql = squel.select().from("call_records").toString();
+    var aligned = squel.select().
+      field("lhs.imsi", "id").
+      field("CAST(DATE_FORMAT(lhs.timestamp, '%Y-%m-%d') as DATETIME)", "day").
+      field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version").
+      field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS INT)", "bucket").
+      from("call_records", "lhs").
+      join("call_records", "rhs", "lhs.imsi >= rhs.imsi").
+      group("day", "id", "version").
+      order("day", true).
+      order("bucket", true);
 
-    connection.query(sql, function(err, rows, fields) {
+    var bucketed = squel.select().
+      field("day").
+      field("bucket").
+      field("MD5(GROUP_CONCAT(version ORDER BY id ASC separator ''))", "digest").
+      from(aligned, "aligned").
+      group("day", "bucket").
+      order("day", true).
+      order("bucket", true);
+
+    var query = connection.query(bucketed.toString(), function(err, rows, fields) {
         if (err) {
           callback(err);
-        } else {          
+        } else { 
+          console.log(rows[0]);         
           callback(null, rows);  
         }
     });
+
+    //console.log("Partitioning query: " + query.sql);
 
     connection.end();
   },
