@@ -21,12 +21,17 @@ var OstaMysql = function() {
 
     connection.connect();
 
-    var target = {table: "call_records", id: "imsi", partition: "timestamp"};
+    var target = {
+      table:            "call_records", 
+      id:               "imsi", 
+      partition:        "timestamp",
+      version_columns:  ["called_number", "calling_number"]
+    };
 
     var aligned = squel.select().
       field(idTemplate(target), "id").
       field(partitionTemplate(target), "day").
-      field("MD5(CONCAT(lhs.called_number, lhs.calling_number))", "version"). // Need to parameterize
+      field("MD5(CONCAT(lhs." + target.version_columns.join(", lhs.") + "))", "version"). // Very hacky join :-(
       field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS UNSIGNED)", "bucket").
       from(target.table, "lhs").
       join(target.table, "rhs", joinTemplate(target)).
