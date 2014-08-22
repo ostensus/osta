@@ -10,6 +10,14 @@ Installing
 
 	$ npm install
 
+Dependencies
+------------
+
+To run the integration test suite, you need have the `ostn` server running:
+
+    $ go get github.com/ostensus/ostn
+    $ $GOROOT/bin/ostn &
+
 Testing
 --------
 
