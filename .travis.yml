@@ -7,3 +7,11 @@ before_install:
   - mysql -e "CREATE DATABASE osta;"
   - mysql -e "CREATE USER 'osta'@'%' IDENTIFIED BY 'osta';"
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'osta'@'%' WITH GRANT OPTION;" -uroot
+  - gvm get
+  - gvm update && source $HOME/.gvm/scripts/gvm
+  - gvm install go1.3 --binary || gvm install go1.3
+  - gvm use go1.3
+  - go env
+  - go get github.com/ostensus/ostn
+  - which ostn
+  - ostn &
