@@ -15,6 +15,7 @@ var client = mysql.createConnection({
 });
 
 var OstaMysql  = require('../services/mysql');
+var Interview  = require('../services/interview');
 
 before(function(done){
 
@@ -58,22 +59,31 @@ before(function(done){
 
 })
 
+test('Osta Mysql smoke test', function(done){
+  var osta = new OstaMysql();
+  
+  osta.smokeTest(function(err, result) {
+   done(err);
+   assert.equal(2, result);
+  });
+  
+});
+
+test('Interview smoke test', function(done){
+  var interview = new Interview();
+  interview.nextQuestion(function(err, result) {
+    done(err);
+    assert.equal("ostn", result);
+  });
+});
+
+
 test('Osta Mysql partition test', function(done){
   var osta = new OstaMysql();
   
   osta.partition(function(err, result) {
     done(err);
     assert.equal(4, result.length); // 1000 days should span 4 years
-  });
-  
-});
-
-test('Osta Mysql smoke test', function(done){
-  var osta = new OstaMysql();
-  
-  osta.smokeTest(function(err, result) {
-  	done(err);
-  	assert.equal(2, result);
   });
   
 });

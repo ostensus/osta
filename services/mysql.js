@@ -78,7 +78,7 @@ var OstaMysql = function() {
         }
     });
 
-    console.log("Partitioning query: " + query.sql);
+    //console.log("Partitioning query: " + query.sql);
 
     connection.end();
   },
