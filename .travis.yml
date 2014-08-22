@@ -14,3 +14,4 @@ before_install:
   - go env
   - go get github.com/ostensus/ostn
   - which ostn
+  - ostn &
