@@ -1,6 +1,8 @@
 osta
 ----
 
+[![Build Status](https://travis-ci.org/ostensus/osta.png?branch=master)](https://travis-ci.org/Ostensus/osta)
+
 `osta` connects datasources behind the firewall to Ostensus.
 
 Installing

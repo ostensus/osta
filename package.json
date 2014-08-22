@@ -19,6 +19,10 @@
   },
   "author": "RelOps",
   "license": "MPL",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ostensus/osta.git"
+  },
   "engines": {
     "node": "0.10.x"
   }
