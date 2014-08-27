@@ -19,7 +19,8 @@
     "moment": "2.8.1"
   },
   "scripts": {
-    "test": "mocha --ui tdd --timeout 5000"
+    "preinstall": "make",
+    "test": "npm run build && mocha --ui tdd --timeout 5000"
   },
   "author": "RelOps",
   "license": "MPL",
