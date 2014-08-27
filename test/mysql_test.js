@@ -71,9 +71,13 @@ test('Osta Mysql smoke test', function(done){
 
 test('Interview smoke test', function(done){
   var interview = new Interview();
-  interview.nextQuestion(function(err, result) {
+
+  // $ echo -n "quux" | md5
+  // 9fb045bba26522b2a50bb3e7a06ae30d
+
+  interview.nextQuestion("quux", function(err, result) {
     done(err);
-    assert.equal("ostn", result);
+    assert.equal("9fb045bba26522b2a50bb3e7a06ae30d", result);
   });
 });
 
