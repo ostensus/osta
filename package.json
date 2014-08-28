@@ -3,10 +3,13 @@
   "version": "0.0.1",
   "description": "Connects datasources behind the firewall to Ostensus",
   "dependencies": {
-    "mysql": "2.4.2",
-    "squel": "3.7.0",
     "dot": "1.0.1",
-    "request": "2.40.0"
+    "inquirer": "0.6.0",
+    "mysql": "2.4.2",
+    "request": "2.40.0",
+    "sqlite3": "^2.2.7",
+    "squel": "3.7.0",
+    "yargs": "1.3.1"
   },
   "devDependencies": {
     "mocha": "1.21.4",
@@ -16,7 +19,8 @@
     "moment": "2.8.1"
   },
   "scripts": {
-    "test": "mocha --ui tdd --timeout 5000"
+    "preinstall": "make",
+    "test": "npm run build && mocha --ui tdd --timeout 5000"
   },
   "author": "RelOps",
   "license": "MPL",
@@ -26,5 +30,8 @@
   },
   "engines": {
     "node": "0.10.x"
+  },
+  "bin": {
+    "sql": "bin/merkle.js"
   }
 }
