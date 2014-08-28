@@ -1,24 +1,33 @@
 #!/usr/bin/env node
 
 var inquirer = require("inquirer");
-var yargs    = require("yargs");
 var _        = require("underscore");
 
 var SqliteTemplate  = require("../lib/sqlite.js");
 var TemplateBuilder = require("../lib/template.js");
 
-yargs.usage("Produces an SQL template to introspect your database");
-yargs.alias("h", "help");
 
-yargs.describe("sqlite", "Path to sqlite file");
-yargs.example("$0 --sqlite FILENAME", "Introspect the sqlite database given by this file path")
+var yargs = require("yargs").
+    usage("Produces an SQL template to introspect your database").
+    alias("h", "help").
+    describe("sqlite", "Path to sqlite file").
+    describe("v", "Increase the output vebosity, more v's means more verbose output").
+    example("$0 --sqlite FILENAME", "Introspect the sqlite database given by this file path").
+    count('verbose').
+    alias('v', 'verbose');
 
-var argv = yargs.argv
+var argv = yargs.argv;
 
 if (argv.h || argv.help) {
   console.log(yargs.help());
   process.exit(1);
 }
+
+VERBOSE_LEVEL = argv.v;
+
+function WARN()  { VERBOSE_LEVEL >= 0 && console.log.apply(console, arguments); }
+function INFO()  { VERBOSE_LEVEL >= 1 && console.log.apply(console, arguments); }
+function DEBUG() { VERBOSE_LEVEL >= 2 && console.log.apply(console, arguments); }
 
 
 var dbTypeQuestion = [
@@ -131,18 +140,18 @@ if (argv.sqlite) {
                 partition: columns[columnsAnswers["partition"]]
               };
 
-              console.log("metadata: " + JSON.stringify(metadata, null, "  ") );
+              DEBUG("User supplied metadata: " + JSON.stringify(metadata, null, "  ") );
 
               var builder = new TemplateBuilder();
               var template = builder.buildTemplate(metadata);
 
-              console.log("template: " + template );
+              DEBUG("Generated SQL template: " + template );
 
               sqlite.verify(argv.sqlite, template, function(err, result) {
                 if (err) {
-                  console.log(err);
+                  WARN(err);
                 } else {
-                  console.log("result: " + JSON.stringify(result, null, "  "));  
+                  DEBUG("result: " + JSON.stringify(result, null, "  "));  
                 }
                 
               });
