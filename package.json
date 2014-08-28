@@ -32,6 +32,6 @@
     "node": "0.10.x"
   },
   "bin": {
-    "sql": "bin/entropy.js"
+    "sql": "bin/merkle.js"
   }
 }
