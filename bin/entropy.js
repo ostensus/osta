@@ -53,14 +53,30 @@ var columnChoice = [
     message: "Which is the id column?"
   },
   {
-    type: "list",
+    type: "checkbox",
     name: "version",
-    message: "Which is the version column?"
+    message: "Which columns should produce the version for the row?",
+    validate: function(x) {
+      if (x.length == 0) {
+        return "You must select at least one column to produce the row version";
+      }
+      else {
+        return true;
+      }
+    }
   },
   {
-    type: "list",
+    type: "checkbox",
     name: "partition",
-    message: "Which is the partition column?"
+    message: "Which is the partition column?",
+    validate: function(x) {
+      if (x.length > 1) {
+        return "Right now only one partition column is supported, please get in contact with support if you need multiple columns";
+      }
+      else {
+        return true;
+      }
+    }
   }
 ];
 
@@ -87,20 +103,31 @@ if (argv.sqlite) {
             }));
 
             var availableColumns = _.keys(columns);
-            var preener = function(x) { availableColumns.splice( availableColumns.indexOf(x), 1); return x; };
+            var preener = function(cols) {
+              if (_.isArray(cols)) {
+                _.each(cols, function (x) {                  
+                  availableColumns.splice( availableColumns.indexOf(x), 1);
+                });  
+              } else {
+                availableColumns.splice( availableColumns.indexOf(cols), 1);
+              }
+              return cols;
+            };
 
             columnChoice[0].choices = availableColumns;
             columnChoice[0].filter = preener;
             columnChoice[1].choices = availableColumns;
             columnChoice[1].filter = preener;
             columnChoice[2].choices = availableColumns;
+
+            columnChoice[2].when = function(x) { return availableColumns.length > 0; }
             
             inquirer.prompt( columnChoice, function( columnsAnswers ) {
 
               var metadata = {
                 table:     tableAnswer.table,
                 id:        columns[columnsAnswers["id"]], 
-                version:   columns[columnsAnswers["version"]], 
+                version:   _.map(columnsAnswers["version"], function(x) { return columns[x]; } ),
                 partition: columns[columnsAnswers["partition"]]
               };
 
