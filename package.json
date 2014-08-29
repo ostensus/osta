@@ -20,7 +20,7 @@
   },
   "scripts": {
     "preinstall": "make",
-    "test": "npm run build && mocha --ui tdd --timeout 5000"
+    "test": "npm run build && mocha --ui tdd --timeout 10000"
   },
   "author": "RelOps",
   "license": "MPL",
