@@ -134,6 +134,7 @@ if (argv.sqlite) {
             inquirer.prompt( columnChoice, function( columnsAnswers ) {
 
               var metadata = {
+                dbms:      "sqlite",
                 table:     tableAnswer.table,
                 id:        columns[columnsAnswers["id"]], 
                 version:   _.map(columnsAnswers["version"], function(x) { return columns[x]; } ),
