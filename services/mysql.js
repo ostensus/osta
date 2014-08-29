@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var squel = require("squel");
 var doT   = require('dot');
 
-squel.useFlavour('mysql');
+var TemplateBuilder  = require("../lib/template.js"); 
 
 var idTemplate        = doT.template("lhs.{{= it.id }}");
 var joinTemplate      = doT.template("lhs.{{= it.id }} >= rhs.{{= it.id }}");
@@ -17,59 +17,27 @@ var OstaMysql = function() {
       password : 'osta'
     });
 
-  self.partition = function(callback) { 
+  self.partition = function(callback) {
+
+    var metadata = {
+      dbms:      "mysql", 
+      table:     "call_records",
+      id:        { name: "imsi" },
+      version:   [ 
+        { name: "called_number" },
+        { name: "calling_number" }
+      ],
+      partition: { name: "timestamp" }
+    };
+
+    var builder = new TemplateBuilder();
+    var template = builder.buildTemplate(metadata);
+
+    console.log("Generated SQL template: " + template);
 
     connection.connect();
 
-    var target = {
-      table:            "call_records", 
-      id:               "imsi", 
-      partition:        "timestamp",
-      version_columns:  ["called_number", "calling_number"]
-    };
-
-    var aligned = squel.select().
-      field(idTemplate(target), "id").
-      field(partitionTemplate(target), "day").
-      field("MD5(CONCAT(lhs." + target.version_columns.join(", lhs.") + "))", "version"). // Very hacky join :-(
-      field("CAST(ceil((CAST(COUNT(*) AS decimal) / 100)) AS UNSIGNED)", "bucket").
-      from(target.table, "lhs").
-      join(target.table, "rhs", joinTemplate(target)).
-      group("day", "id", "version").
-      order("day", true).
-      order("bucket", true);
-
-    var bucketed = squel.select().
-      field("day").
-      field("bucket").
-      field("MD5(GROUP_CONCAT(version ORDER BY id ASC separator ''))", "digest").
-      from(aligned, "aligned").
-      group("day", "bucket").
-      order("day", true).
-      order("bucket", true);
-
-    var daily = squel.select().
-      field("day").
-      field("MD5(GROUP_CONCAT(digest ORDER BY bucket ASC separator ''))", "digest").
-      from(bucketed, "bucketed").
-      group("day").
-      order("day", true);
-
-    var monthly = squel.select().
-      field("CAST(DATE_FORMAT(day, '%Y-%m-01') as DATETIME)", "month").
-      field("MD5(GROUP_CONCAT(digest ORDER BY day ASC separator ''))", "digest").
-      from(daily, "daily").
-      group("month").
-      order("month", true);
-
-    var yearly = squel.select().
-      field("CAST(DATE_FORMAT(month, '%Y-01-01') as DATETIME)", "year").
-      field("MD5(GROUP_CONCAT(digest ORDER BY month ASC separator ''))", "digest").
-      from(monthly, "monthly").
-      group("year").
-      order("year", true);
-
-    var query = connection.query(yearly.toString(), function(err, rows, fields) {
+    var query = connection.query(template, function(err, rows, fields) {
         if (err) {
           callback(err);
         } else { 
@@ -77,8 +45,6 @@ var OstaMysql = function() {
           callback(null, rows);  
         }
     });
-
-    //console.log("Partitioning query: " + query.sql);
 
     connection.end();
   },

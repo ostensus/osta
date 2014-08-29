@@ -81,7 +81,6 @@ test('Interview smoke test', function(done){
   });
 });
 
-
 test('Osta Mysql partition test', function(done){
   var osta = new OstaMysql();
   
