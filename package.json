@@ -4,7 +4,7 @@
   "description": "Connects datasources behind the firewall to Ostensus",
   "dependencies": {
     "dot": "1.0.1",
-    "inquirer": "git+https://git@github.com/SBoudrias/Inquirer.js#34fbdc",
+    "inquirer": "git+https://git@github.com/SBoudrias/Inquirer.js#87d7445",
     "mysql": "2.4.2",
     "request": "2.40.0",
     "sqlite3": "^2.2.7",
