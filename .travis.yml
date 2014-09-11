@@ -12,6 +12,18 @@ before_install:
   - gvm install go1.3 --binary || gvm install go1.3
   - gvm use go1.3
   - go env
-  - go get github.com/ostensus/ostn
-  - which ostn
-  - ostn &
+  - go get github.com/tools/godep
+  - export PATH=$HOME/gopath/bin:$PATH
+  - export GOPATH=$GOPATH:`pwd`
+  - mkdir -p src/github.com/ostensus
+  - pushd src/github.com/ostensus
+  - git clone https://github.com/ostensus/ostn.git
+  - pushd ostn
+  - git checkout master
+  - godep restore
+  - go build
+  - ls -la ostn
+  - ./ostn &
+  - popd
+  - popd
+  - pwd
