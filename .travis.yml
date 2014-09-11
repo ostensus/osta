@@ -12,6 +12,9 @@ before_install:
   - gvm install go1.3 --binary || gvm install go1.3
   - gvm use go1.3
   - go env
-  - go get github.com/ostensus/ostn
+  - git clone https://github.com/ostensus/ostn.git
+  - cd ostn
+  - git checkout d287314
+  - go install 
   - which ostn
   - ostn &
