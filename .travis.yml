@@ -24,3 +24,7 @@ before_install:
   - go build
   - ls -la ostn
   - ./ostn &
+
+script:
+  - npm install
+  - npm test
