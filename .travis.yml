@@ -16,15 +16,14 @@ before_install:
   - export PATH=$HOME/gopath/bin:$PATH
   - export GOPATH=$GOPATH:`pwd`
   - mkdir -p src/github.com/ostensus
-  - cd src/github.com/ostensus
+  - pushd src/github.com/ostensus
   - git clone https://github.com/ostensus/ostn.git
-  - cd ostn
+  - pushd ostn
   - git checkout 3955ed6
   - godep restore
   - go build
   - ls -la ostn
   - ./ostn &
-
-script:
-  - npm install
-  - npm test
+  - popd
+  - popd
+  - pwd
