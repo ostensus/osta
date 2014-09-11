@@ -15,7 +15,7 @@ var client = mysql.createConnection({
 });
 
 var OstaMysql  = require('../services/mysql');
-var Interview  = require('../services/interview');
+var Ostn       = require('../lib/ostn');
 
 before(function(done){
 
@@ -69,17 +69,26 @@ test('Osta Mysql smoke test', function(done){
   
 });
 
-test('Interview smoke test', function(done){
-  var interview = new Interview();
-
-  // $ echo -n "quux" | md5
-  // 9fb045bba26522b2a50bb3e7a06ae30d
-
-  interview.nextQuestion("quux", function(err, result) {
+test('Repo smoke test', function(done){
+  var ostn = new Ostn();
+  
+  ostn.newRepo("quux", function(err, result) {
     done(err);
-    assert.equal("9fb045bba26522b2a50bb3e7a06ae30d", result);
+    assert(result > 0, "Repo Id was " + result);
   });
 });
+
+// test('Interview smoke test', function(done){
+//   var interview = new Interview();
+
+//   // $ echo -n "quux" | md5
+//   // 9fb045bba26522b2a50bb3e7a06ae30d
+
+//   interview.nextQuestion("quux", function(err, result) {
+//     done(err);
+//     assert.equal("9fb045bba26522b2a50bb3e7a06ae30d", result);
+//   });
+// });
 
 test('Osta Mysql partition test', function(done){
   var osta = new OstaMysql();
