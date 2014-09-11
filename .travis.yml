@@ -14,12 +14,14 @@ before_install:
   - go env
   - go get github.com/tools/godep
   - export PATH=$HOME/gopath/bin:$PATH
+  - export GOPATH=$GOPATH:`pwd`
+  - mkdir -p src/github.com/ostensus
+  - cd src/github.com/ostensus
   - git clone https://github.com/ostensus/ostn.git
   - cd ostn
   - git checkout 3955ed6
   - godep restore
-  - godep go install
-  - go build ostn.go
+  - go build
   - ls -la ostn
   - which ostn
   - ostn &
