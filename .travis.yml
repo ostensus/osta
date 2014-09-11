@@ -23,5 +23,4 @@ before_install:
   - godep restore
   - go build
   - ls -la ostn
-  - which ostn
-  - ostn &
+  - ./ostn &
