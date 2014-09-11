@@ -19,7 +19,7 @@ before_install:
   - pushd src/github.com/ostensus
   - git clone https://github.com/ostensus/ostn.git
   - pushd ostn
-  - git checkout 3955ed6
+  - git checkout master
   - godep restore
   - go build
   - ls -la ostn
