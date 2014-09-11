@@ -18,7 +18,7 @@ before_install:
   - cd ostn
   - git checkout 3955ed6
   - godep restore
-  - go build ./...
+  - go build .
   - go build ostn.go
   - ls -la ostn
   - which ostn
