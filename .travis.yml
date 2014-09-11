@@ -15,6 +15,6 @@ before_install:
   - git clone https://github.com/ostensus/ostn.git
   - cd ostn
   - git checkout d287314
-  - go install 
+  - go get ./...
   - which ostn
   - ostn &
