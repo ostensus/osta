@@ -17,8 +17,8 @@ before_install:
   - git clone https://github.com/ostensus/ostn.git
   - cd ostn
   - git checkout 3955ed6
+  - godep go install
   - godep restore
-  - go build .
   - go build ostn.go
   - ls -la ostn
   - which ostn
